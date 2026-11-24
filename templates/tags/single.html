@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ term.name }} · {{ config.title }}{% endblock title %}
+
+{% block content %}
+<p class="prompt">grep -l "{{ term.name }}" log/*</p>
+<h1 class="display sm">#{{ term.name }}</h1>
+<div class="grid">
+  {% for page in term.pages %}
+    {% include "partials/card.html" %}
+  {% endfor %}
+</div>
+{% endblock content %}

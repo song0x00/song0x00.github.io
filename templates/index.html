@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set posts = get_section(path="posts/_index.md") %}
+<section class="hero">
+  <p class="prompt">guest@{{ config.title }} ~ %</p>
+  <h1 class="display">notes on offense,<br>defense &amp; everything<br>that beeps<span class="cursor" aria-hidden="true"></span></h1>
+  <p class="lede">{{ config.extra.tagline }}</p>
+  <a class="btn" href="{{ get_url(path='posts') }}">browse the log</a>
+</section>
+
+<section>
+  <h2 class="label">latest</h2>
+  <div class="grid">
+    {% for page in posts.pages %}{% if loop.index <= 6 %}
+      {% include "partials/card.html" %}{% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endblock content %}

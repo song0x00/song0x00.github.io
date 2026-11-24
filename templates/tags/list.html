@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}index · {{ config.title }}{% endblock title %}
+
+{% block content %}
+<h1 class="display sm">index</h1>
+<p class="lede">every tag, as a node.</p>
+<div class="tagcloud">
+  {% for term in terms %}
+    <a class="tag big" href="{{ term.permalink }}">{{ term.name }} <span class="count">{{ term.pages | length }}</span></a>
+  {% endfor %}
+</div>
+{% endblock content %}

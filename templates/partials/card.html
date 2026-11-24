@@ -1,0 +1,13 @@
+<a class="card" href="{{ page.permalink }}">
+  <div class="card-art" aria-hidden="true"></div>
+  <h3 class="card-title">{{ page.title }}</h3>
+  {% if page.description %}<p class="card-desc">{{ page.description }}</p>{% endif %}
+  <div class="card-meta">
+    <time datetime="{{ page.date }}">{{ page.date | date(format="%Y.%m.%d") }}</time>
+    <span class="tags">
+      {% if page.taxonomies.tags %}
+        {% for t in page.taxonomies.tags %}<span class="tag">{{ t }}</span>{% endfor %}
+      {% endif %}
+    </span>
+  </div>
+</a>

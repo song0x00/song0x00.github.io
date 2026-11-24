@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ section.title }} · {{ config.title }}{% endblock title %}
+
+{% block content %}
+{% set tags = get_taxonomy(kind="tags") %}
+<div class="split">
+  <aside class="tree" aria-label="Tag tree">
+    <h2 class="label">tag tree</h2>
+    <ul>
+      <li class="root"><a href="{{ get_url(path='posts') }}">/</a>
+        <ul>
+          {% for term in tags.items %}
+            <li><a href="{{ term.permalink }}">{{ term.name }} <span class="count">{{ term.pages | length }}</span></a></li>
+          {% endfor %}
+        </ul>
+      </li>
+    </ul>
+  </aside>
+
+  <div>
+    <h1 class="display sm">{{ section.title }}</h1>
+    <div class="grid">
+      {% for page in section.pages %}
+        {% include "partials/card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

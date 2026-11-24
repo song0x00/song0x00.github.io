@@ -1,0 +1,15 @@
+base_url = "https://songbird.rip"
+title = "phosphor"
+description = "notes on offense, defense, and everything that beeps"
+default_language = "en"
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+
+taxonomies = [
+    { name = "tags", feed = false },
+]
+
+[extra]
+# Shown in the nav + footer. Change freely.
+site_glyph = "◉"
+tagline = "a running log of write-ups, tooling notes and things that broke in interesting ways"
