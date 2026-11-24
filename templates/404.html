@@ -3,9 +3,9 @@
 
 {% block content %}
 <section class="hero">
-  <p class="prompt">error 404</p>
-  <h1 class="display">no signal<span class="cursor" aria-hidden="true"></span></h1>
+  <p class="prompt"><span class="accent">error 404</span> ~ % cat ./this-page</p>
+  <h1 class="wordmark">no signal<span class="cursor" aria-hidden="true"></span></h1>
   <p class="lede">that page isn't on this frequency.</p>
-  <a class="btn" href="{{ get_url(path='/') }}">back to home</a>
+  <a class="btn" href="{{ get_url(path='/') }}">back to home <span aria-hidden="true">→</span></a>
 </section>
 {% endblock content %}

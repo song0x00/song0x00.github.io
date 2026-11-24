@@ -3,12 +3,13 @@
 {% block desc %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock desc %}
 
 {% block content %}
+{% if page.date %}<div class="progress" aria-hidden="true"><span></span></div>{% endif %}
 <article class="post">
-  <p class="prompt">cat {{ page.slug }}.md</p>
-  <h1 class="display sm">{{ page.title }}</h1>
+  <p class="prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % cat {{ page.slug }}.md</p>
+  <h1 class="display">{{ page.title }}</h1>
   <div class="post-meta">
     {% if page.date %}<time datetime="{{ page.date }}">{{ page.date | date(format="%Y.%m.%d") }}</time>{% endif %}
-    {% if page.reading_time %}<span>{{ page.reading_time }} min read</span>{% endif %}
+    {% if page.date and page.reading_time %}<span>{{ page.reading_time }} min read</span>{% endif %}
     {% if page.taxonomies.tags %}
       <span class="tags">{% for t in page.taxonomies.tags %}<a class="tag" href="{{ get_taxonomy_url(kind='tags', name=t) }}">{{ t }}</a>{% endfor %}</span>
     {% endif %}
@@ -16,5 +17,23 @@
   <div class="prose">
     {{ page.content | safe }}
   </div>
+
+  {# posts are sorted newest-first, so "higher" is the older entry #}
+  {% if page.higher or page.lower %}
+  <nav class="post-nav" aria-label="More entries">
+    {% if page.higher %}
+      <a class="pn pn-prev" href="{{ page.higher.permalink }}" rel="prev">
+        <span class="pn-label">← older <kbd>[</kbd></span>
+        <span class="pn-title">{{ page.higher.title }}</span>
+      </a>
+    {% else %}<span></span>{% endif %}
+    {% if page.lower %}
+      <a class="pn pn-next" href="{{ page.lower.permalink }}" rel="next">
+        <span class="pn-label">newer <kbd>]</kbd> →</span>
+        <span class="pn-title">{{ page.lower.title }}</span>
+      </a>
+    {% endif %}
+  </nav>
+  {% endif %}
 </article>
 {% endblock content %}

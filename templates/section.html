@@ -3,9 +3,13 @@
 
 {% block content %}
 {% set tags = get_taxonomy(kind="tags") %}
+<p class="prompt page-prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % ls {{ section.title }}/</p>
+<h1 class="display">{{ section.title }}</h1>
+<p class="count-line">{{ section.pages | length }} entries</p>
+
 <div class="split">
   <aside class="tree" aria-label="Tag tree">
-    <h2 class="label">tag tree</h2>
+    <h2 class="label"><span class="idx">01</span> tag tree</h2>
     <ul>
       <li class="root"><a href="{{ get_url(path='posts') }}">/</a>
         <ul>
@@ -18,7 +22,7 @@
   </aside>
 
   <div>
-    <h1 class="display sm">{{ section.title }}</h1>
+    <h2 class="label"><span class="idx">02</span> entries</h2>
     <div class="grid">
       {% for page in section.pages %}
         {% include "partials/card.html" %}

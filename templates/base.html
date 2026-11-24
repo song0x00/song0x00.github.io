@@ -5,26 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ config.title }}{% endblock title %}</title>
   <meta name="description" content="{% block desc %}{{ config.description }}{% endblock desc %}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  {# apply the saved CRT preference before first paint (default: on) #}
+  <script>try{if(localStorage.getItem("crt")!=="off")document.documentElement.classList.add("crt-on")}catch(e){document.documentElement.classList.add("crt-on")}</script>
+  {# accent preview: ?accent=938aa9 recolours the site for this tab (sticks while you click around); ?accent=reset clears it #}
+  <script>try{var q=new URLSearchParams(location.search).get("accent");if(q==="reset"){sessionStorage.removeItem("accent");q=null}q=q||sessionStorage.getItem("accent");if(q&&/^[0-9a-f]{6}$/i.test(q)){sessionStorage.setItem("accent",q);var s=document.documentElement.style;s.setProperty("--accent","#"+q);s.setProperty("--accent-rgb",[0,2,4].map(function(i){return parseInt(q.substr(i,2),16)}).join(","))}}catch(e){}</script>
+  <link rel="preload" href="{{ get_url(path='fonts/doto-latin-900-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ get_url(path='fonts/space-mono-latin-400-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
   <link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml') }}">
+  <script src="{{ get_url(path='site.js') }}" defer></script>
+  {# ── link previews (Discord, Mastodon, Signal, …) ── #}
+  {% set og_title = config.title %}{% set og_desc = config.description %}{% set og_type = "website" %}{% set og_img = "og.png" %}
+  {% if page %}
+    {% set og_title = page.title ~ " · " ~ config.title %}
+    {% if page.description %}{% set og_desc = page.description %}{% endif %}
+    {% if page.date %}{% set og_type = "article" %}{% endif %}
+    {% if page.extra.image %}{% set og_img = page.extra.image %}{% endif %}
+  {% elif section and section.title and section.title != "home" %}
+    {% set og_title = section.title ~ " · " ~ config.title %}
+  {% endif %}
+  <meta name="theme-color" content="#938aa9">
+  <meta property="og:site_name" content="{{ config.title }}">
+  <meta property="og:type" content="{{ og_type }}">
+  <meta property="og:title" content="{{ og_title }}">
+  <meta property="og:description" content="{{ og_desc }}">
+  <meta property="og:url" content="{{ current_url | default(value=config.base_url) }}">
+  <meta property="og:image" content="{{ get_url(path=og_img) }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ og_title }}">
+  {% if page and page.date %}<meta property="article:published_time" content="{{ page.date }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="{{ current_url | default(value=config.base_url) }}">
+  {% block head %}{% endblock head %}
 </head>
 <body>
   <div class="crt" aria-hidden="true"></div>
-  <div class="vignette" aria-hidden="true"></div>
 
+  {% set cp = current_path | default(value="/") %}
   <header class="topbar">
-    <a class="brand" href="{{ get_url(path='/') }}">
-      <span class="led" aria-hidden="true"></span>
-      <span class="brand-name">{{ config.title }}</span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a class="pill" href="{{ get_url(path='posts') }}">log</a>
-      <a class="pill" href="{{ get_url(path='tags') }}">index</a>
-      <a class="pill" href="{{ get_url(path='about') }}">about</a>
-    </nav>
+    <div class="bar-group">
+      <a class="brand" href="{{ get_url(path='/') }}" aria-label="home">
+        <span class="brand-name">{{ config.title }}</span>
+      </a>
+      <a class="ibtn{% if "/stats" in cp %} on{% endif %}" href="{{ get_url(path='stats') }}" aria-label="stats" title="stats">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V5M19 20v-5M3 20h18"/></svg>
+      </a>
+      <a class="ibtn{% if "/tags" in cp %} on{% endif %}" href="{{ get_url(path='tags') }}" aria-label="tags" title="tags">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v7.5l9.5 9.5 8-8L11 3.5H3.5z"/><circle cx="7.5" cy="8" r="1.3"/></svg>
+      </a>
+    </div>
+
+    <div class="bar-group">
+      <button class="ibtn crt-toggle" type="button" aria-label="toggle CRT effect" title="CRT" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2.5"/><path d="M8.5 21h7M12 17v4"/></svg>
+        <span class="ibtn-label">crt</span>
+      </button>
+      <a class="ibtn{% if "/tools" in cp %} on{% endif %}" href="{{ get_url(path='tools') }}" aria-label="tools" title="tools">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M7.5 10l2.5 2.5L7.5 15M12.5 15h4"/></svg>
+      </a>
+      <a class="ibtn{% if "/posts" in cp %} on{% endif %}" href="{{ get_url(path='posts') }}" aria-label="all posts" title="log">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4.5 6.5h.5M4.5 12h.5M4.5 17.5h.5" stroke-width="2.4"/></svg>
+      </a>
+      <div class="search" data-index="{{ get_url(path='search_index.en.json') }}">
+        <button class="ibtn search-btn" type="button" aria-label="search" title="search ( / )" aria-expanded="false" aria-controls="search-input">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>
+        </button>
+        <input id="search-input" class="search-input" type="search" placeholder="grep the log…" autocomplete="off" spellcheck="false" aria-label="search articles" tabindex="-1">
+        <div class="search-results" role="listbox" hidden></div>
+      </div>
+      <a class="ibtn{% if "/about" in cp %} on{% endif %}" href="{{ get_url(path='about') }}" aria-label="about &amp; contact" title="about">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20.5c1.3-3.9 4.2-5.8 7.5-5.8s6.2 1.9 7.5 5.8"/></svg>
+      </a>
+    </div>
   </header>
 
   <main class="wrap">
@@ -33,8 +86,15 @@
 
   <footer class="foot">
     <span class="dots" aria-hidden="true"></span>
-    <span>{{ config.title }} · signal stable</span>
-    <a href="{{ get_url(path='atom.xml') }}">feed</a>
+    <span class="foot-name">{{ config.title }}</span>
+    <span class="foot-status">signal stable · built {{ now() | date(format="%Y.%m.%d") }}</span>
+    <span class="foot-links">
+      <span class="foot-kbd"><kbd>?</kbd> shortcuts</span>
+      <a href="https://github.com/song0x00">github</a>
+      <a href="{{ get_url(path='atom.xml') }}">feed</a>
+    </span>
   </footer>
+  {% block scripts %}{% endblock scripts %}
+  {% if config.mode == "serve" %}{% include "partials/embed-preview.html" %}{% endif %}
 </body>
 </html>

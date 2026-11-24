@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}stats · {{ config.title }}{% endblock title %}
+
+{% block content %}
+{% set posts = get_section(path="posts/_index.md") %}
+{% set tags = get_taxonomy(kind="tags") %}
+{% set n = posts.pages | length %}
+{% set months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"] %}
+{% set_global words = 0 %}
+{% set_global longest = 0 %}
+{% set_global longest_title = "" %}
+{% set_global longest_url = "" %}
+{% set_global first_date = "" %}
+{% for p in posts.pages %}
+  {% set_global words = words + p.word_count %}
+  {% if p.word_count > longest %}{% set_global longest = p.word_count %}{% set_global longest_title = p.title %}{% set_global longest_url = p.permalink %}{% endif %}
+  {% if loop.last %}{% set_global first_date = p.date %}{% endif %}
+{% endfor %}
+
+<p class="prompt page-prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % stat ./log</p>
+<h1 class="display">stats</h1>
+<p class="count-line">telemetry for this site, rebuilt on every push</p>
+
+<section class="widgets stats-widgets" aria-label="Totals">
+  <div class="widget"><span class="w-label">entries</span><span class="w-value">{{ n }}</span></div>
+  <div class="widget"><span class="w-label">words</span><span class="w-value sm">{{ words }}</span></div>
+  <div class="widget"><span class="w-label">avg read</span><span class="w-value sm">{% if n > 0 %}{{ (words / n / 200) | round(method="ceil") | int }}{% else %}0{% endif %} min</span></div>
+  <div class="widget dark"><span class="w-label">tags</span><span class="w-value">{{ tags.items | length }}</span></div>
+</section>
+
+{% if n > 0 %}
+<section class="stat-block">
+  <h2 class="label"><span class="idx">01</span> transmissions per month</h2>
+  {% for year, ps in posts.pages | group_by(attribute="year") %}
+    {% set_global maxm = 1 %}
+    {% for m in range(start=1, end=13) %}
+      {% set_global c = 0 %}
+      {% for p in ps %}{% if p.month == m %}{% set_global c = c + 1 %}{% endif %}{% endfor %}
+      {% if c > maxm %}{% set_global maxm = c %}{% endif %}
+    {% endfor %}
+    <div class="chart">
+      <span class="chart-year">{{ year }}</span>
+      <div class="cols">
+        {% for m in range(start=1, end=13) %}
+          {% set_global c = 0 %}
+          {% for p in ps %}{% if p.month == m %}{% set_global c = c + 1 %}{% endif %}{% endfor %}
+          <div class="col{% if c == 0 %} zero{% endif %}" style="--v:{{ c }};--m:{{ maxm }}" title="{{ c }} in {{ year }}-{{ m }}">
+            <span class="col-n">{% if c > 0 %}{{ c }}{% endif %}</span>
+            <span class="col-bar"></span>
+            <span class="col-m">{{ months[loop.index0] }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+
+<section class="stat-block">
+  <h2 class="label"><span class="idx">02</span> signal by tag</h2>
+  {% set_global maxt = 1 %}
+  {% for t in tags.items %}{% if t.pages | length > maxt %}{% set_global maxt = t.pages | length %}{% endif %}{% endfor %}
+  <div class="hbars">
+    {% for t in tags.items %}
+      <a class="hbar" href="{{ t.permalink }}" style="--v:{{ t.pages | length }};--m:{{ maxt }}">
+        <span class="hbar-name">{{ t.name }}</span>
+        <span class="hbar-track"><span class="hbar-fill"></span></span>
+        <span class="hbar-n">{{ t.pages | length }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="stat-block">
+  <h2 class="label"><span class="idx">03</span> records</h2>
+  <dl class="records">
+    <div><dt>first signal</dt><dd>{{ first_date | date(format="%Y.%m.%d") }}</dd></div>
+    <div><dt>latest signal</dt><dd>{{ posts.pages[0].date | date(format="%Y.%m.%d") }}</dd></div>
+    <div><dt>longest entry</dt><dd><a href="{{ longest_url }}">{{ longest_title }}</a> · {{ longest }} words</dd></div>
+  </dl>
+</section>
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} · tools · {{ config.title }}{% endblock title %}
+{% block desc %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock desc %}
+
+{% block content %}
+<article class="post tool-page">
+  <p class="prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % cat ~/tools/{{ page.slug }}.md</p>
+  <h1 class="display">{{ page.title }}</h1>
+  <div class="post-meta">
+    <a class="tag" href="{{ get_url(path='tools') }}">← all tools</a>
+    <span>{{ (page.content | split(pat="<pre") | length) - 1 }} commands</span>
+  </div>
+  {% if page.toc %}
+  <nav class="tool-jump" aria-label="Sections">
+    {% for h in page.toc %}<a class="tag" href="{{ h.permalink }}">{{ h.title }}</a>{% endfor %}
+  </nav>
+  {% endif %}
+  <div class="prose">
+    {{ page.content | safe }}
+  </div>
+  <p class="disclaimer">for authorised testing and CTF use only.</p>
+</article>
+{% endblock content %}

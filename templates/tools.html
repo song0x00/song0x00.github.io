@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}tools · {{ config.title }}{% endblock title %}
+
+{% block content %}
+<p class="prompt page-prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % ls ~/tools/</p>
+<p class="kicker">utilities</p>
+<h1 class="display">tools</h1>
+<p class="lede">{{ section.extra.intro }}</p>
+
+{% set_global total = 0 %}
+{% for page in section.pages %}{% set_global total = total + (page.content | split(pat="<pre") | length) - 1 %}{% endfor %}
+<p class="count-line">{{ section.pages | length }} sections · {{ total }} commands</p>
+
+<div class="tool-grid">
+  {% for page in section.pages %}
+    {% set chunks = page.content | split(pat="<h2") %}
+    <article class="tool-card">
+      <a class="tool-head" href="{{ page.permalink }}">
+        <span class="tool-idx">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span>
+        <h2 class="tool-title">{{ page.title }}</h2>
+        <span class="tool-count">{{ (page.content | split(pat="<pre") | length) - 1 }}</span>
+      </a>
+      {% if page.description %}<p class="tool-desc">{{ page.description }}</p>{% endif %}
+      <ul class="tool-subs">
+        {% for h in page.toc %}
+          <li><a href="{{ h.permalink }}">{{ h.title }}<span class="count">{{ (chunks[loop.index] | split(pat="<pre") | length) - 1 }}</span></a></li>
+        {% endfor %}
+      </ul>
+    </article>
+  {% endfor %}
+</div>
+
+<p class="disclaimer">for authorised testing and CTF use only.</p>
+{% endblock content %}

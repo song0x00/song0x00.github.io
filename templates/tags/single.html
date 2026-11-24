@@ -2,8 +2,9 @@
 {% block title %}{{ term.name }} · {{ config.title }}{% endblock title %}
 
 {% block content %}
-<p class="prompt">grep -l "{{ term.name }}" log/*</p>
-<h1 class="display sm">#{{ term.name }}</h1>
+<p class="prompt page-prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % grep -l "{{ term.name }}" log/*</p>
+<h1 class="display">#{{ term.name }}</h1>
+<p class="count-line">{{ term.pages | length }} entries</p>
 <div class="grid">
   {% for page in term.pages %}
     {% include "partials/card.html" %}

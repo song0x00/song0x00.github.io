@@ -1,7 +1,8 @@
 base_url = "https://songbird.rip"
-title = "phosphor"
-description = "notes on offense, defense, and everything that beeps"
+title = "songbird"
+description = "red team & wireless security — write-ups, tooling notes and things that broke in interesting ways"
 default_language = "en"
+build_search_index = true
 generate_feeds = true
 feed_filenames = ["atom.xml"]
 
@@ -9,7 +10,24 @@ taxonomies = [
     { name = "tags", feed = false },
 ]
 
+[search]
+index_format = "fuse_json"
+include_title = true
+include_description = true
+include_content = true
+truncate_content_length = 4000
+
 [extra]
+# shell-prompt identity used across the site: "<visitor>@<host>" and the about terminal's "<owner>@<host>"
+prompt_visitor = "guest"
+prompt_owner = "song"
+prompt_host = "tty1"
 # Shown in the nav + footer. Change freely.
-site_glyph = "◉"
-tagline = "a running log of write-ups, tooling notes and things that broke in interesting ways"
+site_glyph = "●"
+role = "red team & wireless"
+tagline = "red teamer. wireless researcher. occasional CTF player. a running log of write-ups, tooling notes and things that broke in interesting ways."
+
+[markdown.highlighting]
+style = "class"
+# only used for its class slots — colours come from static/style.css
+theme = "github-dark"

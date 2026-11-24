@@ -1,12 +1,35 @@
 {% extends "base.html" %}
-{% block title %}index · {{ config.title }}{% endblock title %}
+{% block title %}tags · {{ config.title }}{% endblock title %}
 
 {% block content %}
-<h1 class="display sm">index</h1>
-<p class="lede">every tag, as a node.</p>
+{% set posts = get_section(path="posts/_index.md") %}
+<p class="prompt page-prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % ls tags/</p>
+<h1 class="display">tags</h1>
+<p class="count-line">{{ terms | length }} tags · {{ posts.pages | length }} entries</p>
+
+<div class="tagfield" aria-label="Tag playground">
+  {% for term in terms %}
+    <button type="button" class="bubble" data-tag="{{ term.name }}" data-n="{{ term.pages | length }}" data-href="{{ term.permalink }}">
+      <span class="bubble-name">{{ term.name }}</span>
+      <span class="bubble-n">{{ term.pages | length }}</span>
+    </button>
+  {% endfor %}
+  <span class="tagfield-hint">drag to throw · click to filter · double-click to open</span>
+</div>
+
+<h2 class="label tag-label"><span class="idx">01</span> all tags</h2>
 <div class="tagcloud">
   {% for term in terms %}
-    <a class="tag big" href="{{ term.permalink }}">{{ term.name }} <span class="count">{{ term.pages | length }}</span></a>
+    <a class="tag big" href="{{ term.permalink }}" data-tag="{{ term.name }}">{{ term.name }} <span class="count">{{ term.pages | length }}</span></a>
+  {% endfor %}
+</div>
+
+<h2 class="label tag-label"><span class="idx">02</span> <span class="filter-status">all entries</span> <button type="button" class="filter-clear" hidden>clear ×</button></h2>
+<div class="grid filter-grid">
+  {% for page in posts.pages %}
+    {% include "partials/card.html" %}
   {% endfor %}
 </div>
 {% endblock content %}
+
+{% block scripts %}<script src="{{ get_url(path='tagfield.js') }}" defer></script>{% endblock scripts %}

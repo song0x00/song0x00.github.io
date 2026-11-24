@@ -1,13 +1,16 @@
-<a class="card" href="{{ page.permalink }}">
-  <div class="card-art" aria-hidden="true"></div>
+<a class="card" href="{{ page.permalink }}" data-tags="{% if page.taxonomies.tags %}{{ page.taxonomies.tags | join(sep="|") }}{% endif %}">
+  <div class="card-head">
+    <time datetime="{{ page.date }}">{{ page.date | date(format="%Y.%m.%d") }}</time>
+    <span class="card-dot" aria-hidden="true"></span>
+  </div>
   <h3 class="card-title">{{ page.title }}</h3>
   {% if page.description %}<p class="card-desc">{{ page.description }}</p>{% endif %}
   <div class="card-meta">
-    <time datetime="{{ page.date }}">{{ page.date | date(format="%Y.%m.%d") }}</time>
     <span class="tags">
       {% if page.taxonomies.tags %}
         {% for t in page.taxonomies.tags %}<span class="tag">{{ t }}</span>{% endfor %}
       {% endif %}
     </span>
+    <span class="card-go" aria-hidden="true">↗</span>
   </div>
 </a>

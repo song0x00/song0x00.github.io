@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}about · {{ config.title }}{% endblock title %}
+{% block desc %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock desc %}
+
+{% block content %}
+<article class="post about">
+  <p class="prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % ssh {{ config.extra.prompt_owner }}@{{ config.extra.prompt_host }}</p>
+  <h1 class="display">{{ page.title }}</h1>
+
+  <section class="term" aria-label="Interactive terminal" data-host="{{ config.extra.prompt_host }}" data-owner="{{ config.extra.prompt_owner }}" data-visitor="{{ config.extra.prompt_visitor }}" hidden>
+    <div class="term-bar">
+      <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="term-title">{{ config.extra.prompt_owner }}@{{ config.extra.prompt_host }}: ~</span>
+      <span class="term-tty">ssh</span>
+    </div>
+    <div class="term-screen" role="log" aria-live="polite">
+      <div class="term-out"></div>
+      <form class="term-line" autocomplete="off">
+        <label class="term-ps1" for="term-in"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span>:~$</label>
+        <input id="term-in" class="term-in" type="text" spellcheck="false" autocapitalize="off" aria-label="terminal input">
+      </form>
+    </div>
+  </section>
+  <div class="term-chips" hidden>
+    <span class="term-chips-label">try</span>
+    <button type="button" data-cmd="help">help</button>
+    <button type="button" data-cmd="whoami">whoami</button>
+    <button type="button" data-cmd="ls">ls</button>
+    <button type="button" data-cmd="cat aboutme.txt">cat aboutme.txt</button>
+    <button type="button" data-cmd="cat contact.txt">cat contact.txt</button>
+  </div>
+
+  {# the real content: shown as-is without JS, used as the terminal's "filesystem" with it #}
+  <div class="prose about-src">
+    {{ page.content | safe }}
+  </div>
+</article>
+{% endblock content %}
+
+{% block scripts %}<script src="{{ get_url(path='term.js') }}" defer></script>{% endblock scripts %}

@@ -2,15 +2,36 @@
 
 {% block content %}
 {% set posts = get_section(path="posts/_index.md") %}
+{% set tags = get_taxonomy(kind="tags") %}
 <section class="hero">
-  <p class="prompt">guest@{{ config.title }} ~ %</p>
-  <h1 class="display">notes on offense,<br>defense &amp; everything<br>that beeps<span class="cursor" aria-hidden="true"></span></h1>
+  <p class="prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % whoami</p>
+  <h1 class="wordmark">{{ config.title }}<span class="cursor" aria-hidden="true"></span></h1>
+  <p class="kicker">{{ config.extra.role }} security</p>
   <p class="lede">{{ config.extra.tagline }}</p>
-  <a class="btn" href="{{ get_url(path='posts') }}">browse the log</a>
+  <a class="btn" href="{{ get_url(path='posts') }}">browse the log <span aria-hidden="true">→</span></a>
+</section>
+
+<section class="widgets" aria-label="Site status">
+  <div class="widget">
+    <span class="w-label">entries</span>
+    <span class="w-value">{{ posts.pages | length }}</span>
+  </div>
+  <div class="widget">
+    <span class="w-label">tags</span>
+    <span class="w-value">{{ tags.items | length }}</span>
+  </div>
+  <div class="widget">
+    <span class="w-label">last signal</span>
+    <span class="w-value sm">{% for page in posts.pages %}{% if loop.first %}{{ page.date | date(format="%d %b") }}{% endif %}{% endfor %}</span>
+  </div>
+  <div class="widget dark">
+    <span class="w-label">status</span>
+    <span class="w-value sm">online</span>
+  </div>
 </section>
 
 <section>
-  <h2 class="label">latest</h2>
+  <h2 class="label"><span class="idx">01</span> latest</h2>
   <div class="grid">
     {% for page in posts.pages %}{% if loop.index <= 6 %}
       {% include "partials/card.html" %}{% endif %}
