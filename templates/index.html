@@ -5,10 +5,13 @@
 {% set tags = get_taxonomy(kind="tags") %}
 <section class="hero">
   <p class="prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % whoami</p>
-  <h1 class="wordmark">{{ config.title }}<span class="cursor" aria-hidden="true"></span></h1>
+  <h1 class="wordmark">{{ config.extra.wordmark | default(value=config.title) }}<span class="visually-hidden"> ♪</span><svg class="wm-note" viewBox="0 0 5 7" aria-hidden="true"><rect x="2.1" y="0.1" width=".8" height=".8" rx=".12"/><rect x="2.1" y="1.1" width=".8" height=".8" rx=".12"/><rect x="3.1" y="1.1" width=".8" height=".8" rx=".12"/><rect x="2.1" y="2.1" width=".8" height=".8" rx=".12"/><rect x="4.1" y="2.1" width=".8" height=".8" rx=".12"/><rect x="2.1" y="3.1" width=".8" height=".8" rx=".12"/><rect x="1.1" y="4.1" width=".8" height=".8" rx=".12"/><rect x="2.1" y="4.1" width=".8" height=".8" rx=".12"/><rect x="0.1" y="5.1" width=".8" height=".8" rx=".12"/><rect x="1.1" y="5.1" width=".8" height=".8" rx=".12"/><rect x="2.1" y="5.1" width=".8" height=".8" rx=".12"/><rect x="0.1" y="6.1" width=".8" height=".8" rx=".12"/><rect x="1.1" y="6.1" width=".8" height=".8" rx=".12"/></svg><span class="cursor" aria-hidden="true"></span></h1>
   <p class="kicker">{{ config.extra.role }} security</p>
   <p class="lede">{{ config.extra.tagline }}</p>
-  <a class="btn" href="{{ get_url(path='posts') }}">browse the log <span aria-hidden="true">→</span></a>
+  <div class="hero-actions">
+    <a class="btn" href="{{ get_url(path='posts') }}">browse the log <span aria-hidden="true">→</span></a>
+    <a class="btn ghost" href="{{ get_url(path='work') }}">research &amp; work <span aria-hidden="true">→</span></a>
+  </div>
 </section>
 
 <section class="widgets" aria-label="Site status">
@@ -17,16 +20,16 @@
     <span class="w-value">{{ posts.pages | length }}</span>
   </div>
   <div class="widget">
-    <span class="w-label">tags</span>
-    <span class="w-value">{{ tags.items | length }}</span>
-  </div>
-  <div class="widget">
     <span class="w-label">last signal</span>
     <span class="w-value sm">{% for page in posts.pages %}{% if loop.first %}{{ page.date | date(format="%d %b") }}{% endif %}{% endfor %}</span>
   </div>
-  <div class="widget dark">
-    <span class="w-label">status</span>
-    <span class="w-value sm">online</span>
+  <div class="widget clock" data-tz="{{ config.extra.timezone | default(value='UTC') }}">
+    <span class="w-label">local time</span>
+    <span class="w-value sm"><time class="clock-time">--<span class="clock-colon">:</span>--</time></span>
+  </div>
+  <div class="widget dark ticker" data-lines="{{ config.extra.ticker | default(value=[]) | join(sep='|') }}">
+    <span class="w-label">{{ config.extra.prompt_host }}</span>
+    <p class="ticker-line"><span class="accent" aria-hidden="true">~ %</span> <span class="ticker-text">{{ config.extra.ticker | default(value=[config.title]) | first }}</span><span class="ticker-cursor" aria-hidden="true"></span></p>
   </div>
 </section>
 

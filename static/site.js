@@ -129,6 +129,45 @@
     });
     wrap.appendChild(b);
   });
+  /* ── home tiles: local clock + typing ticker ─────────────── */
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const clock = document.querySelector(".clock");
+  if (clock) {
+    const tz = clock.dataset.tz;
+    const t = clock.querySelector(".clock-time");
+    const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false });
+    const tick = () => {
+      const parts = Object.fromEntries(fmt.formatToParts(new Date()).map(p => [p.type, p.value]));
+      t.innerHTML = `${parts.hour}<span class="clock-colon">:</span>${parts.minute}`;
+      t.dateTime = `${parts.hour}:${parts.minute}`;
+    };
+    tick();
+    setInterval(tick, 1000 * 15);
+  }
+
+  const ticker = document.querySelector(".ticker");
+  const lines = ticker?.dataset.lines.split("|").filter(Boolean) ?? [];
+  if (ticker && lines.length) {
+    const el = ticker.querySelector(".ticker-text");
+    let i = 0;
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    const loop = async () => {
+      for (;;) {
+        const line = lines[i];
+        if (still) { el.textContent = line; await wait(3200); }
+        else {
+          for (let c = 1; c <= line.length; c++) { el.textContent = line.slice(0, c); await wait(55 + Math.random() * 40); }
+          await wait(1900);
+          for (let c = line.length; c >= 0; c--) { el.textContent = line.slice(0, c); await wait(26); }
+          await wait(450);
+        }
+        i = (i + 1) % lines.length;
+      }
+    };
+    el.textContent = "";
+    setTimeout(loop, 700);
+  }
+
   /* ── reading progress (posts only) ───────────────────────── */
   // lift the bar out of <main> so the CRT jitter transform can't pin it in place
   const progress = document.querySelector(".progress");
@@ -151,9 +190,9 @@
 
   /* ── keyboard shortcuts ─────────────────────────────────── */
   const base = document.querySelector(".brand")?.getAttribute("href") || "/";
-  const go = { h: "", l: "posts/", i: "tags/", t: "tools/", s: "stats/", a: "about/" };
+  const go = { h: "", l: "posts/", w: "work/", i: "tags/", t: "tools/", s: "stats/", a: "about/" };
   const keys = [
-    ["g h", "home"], ["g l", "log"], ["g i", "tags index"], ["g t", "tools"], ["g s", "stats"], ["g a", "about"],
+    ["g h", "home"], ["g l", "log"], ["g w", "work"], ["g i", "tags index"], ["g t", "tools"], ["g s", "stats"], ["g a", "about"],
     ["/", "search"], ["c", "toggle CRT"], ["[  ]", "older / newer entry"], ["?", "this list"], ["esc", "close"],
   ];
   let help = null;

@@ -11,6 +11,8 @@
 {% for page in section.pages %}{% set_global total = total + (page.content | split(pat="<pre") | length) - 1 %}{% endfor %}
 <p class="count-line">{{ section.pages | length }} sections · {{ total }} commands</p>
 
+<p class="legal-strip"><span class="accent">!</span> approved targets only — <a href="#legal">read the disclaimer</a> before running anything here.</p>
+
 <div class="tool-grid">
   {% for page in section.pages %}
     {% set chunks = page.content | split(pat="<h2") %}
@@ -30,5 +32,5 @@
   {% endfor %}
 </div>
 
-<p class="disclaimer">for authorised testing and CTF use only.</p>
+{% include "partials/legal.html" %}
 {% endblock content %}

@@ -24,8 +24,22 @@ prompt_owner = "song"
 prompt_host = "tty1"
 # Shown in the nav + footer. Change freely.
 site_glyph = "●"
+# big dot-matrix name on the home page (a dot-matrix ♪ is drawn after it)
+wordmark = "song"
 role = "red team & wireless"
-tagline = "red teamer. wireless researcher. occasional CTF player. a running log of write-ups, tooling notes and things that broke in interesting ways."
+tagline = "red teamer. wireless researcher. tool builder. a running log of research, tooling notes and things that broke in interesting ways."
+
+# home-page "local time" tile (IANA zone name)
+timezone = "Europe/London"
+# home-page typing tile: types each line, deletes it, moves to the next, loops forever.
+# drafts — swap these for your own.
+ticker = [
+  "hi, im song",
+  "cat aboutme.txt",
+  "red teamer. wireless researcher.",
+  "building tools in python & rust.",
+  "tail -f /var/log/signal",
+]
 
 [markdown.highlighting]
 style = "class"

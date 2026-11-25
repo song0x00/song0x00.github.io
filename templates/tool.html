@@ -10,6 +10,7 @@
     <a class="tag" href="{{ get_url(path='tools') }}">← all tools</a>
     <span>{{ (page.content | split(pat="<pre") | length) - 1 }} commands</span>
   </div>
+  <p class="legal-strip"><span class="accent">!</span> approved targets only — <a href="{{ get_url(path='tools') }}#legal">disclaimer</a></p>
   {% if page.toc %}
   <nav class="tool-jump" aria-label="Sections">
     {% for h in page.toc %}<a class="tag" href="{{ h.permalink }}">{{ h.title }}</a>{% endfor %}
@@ -18,6 +19,6 @@
   <div class="prose">
     {{ page.content | safe }}
   </div>
-  <p class="disclaimer">for authorised testing and CTF use only.</p>
+  <p class="disclaimer">approved targets only · <a href="{{ get_url(path='tools') }}#legal">full disclaimer</a></p>
 </article>
 {% endblock content %}

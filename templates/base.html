@@ -40,18 +40,19 @@
   {% block head %}{% endblock head %}
 </head>
 <body>
+  <a class="skip" href="#main">skip to content</a>
   <div class="crt" aria-hidden="true"></div>
 
   {% set cp = current_path | default(value="/") %}
   <header class="topbar">
     <div class="bar-group">
       <a class="brand" href="{{ get_url(path='/') }}" aria-label="home">
-        <span class="brand-name">{{ config.title }}</span>
+        <span class="brand-name">{{ config.title }}</span><span class="brand-mark" aria-hidden="true">{{ config.title | truncate(length=1, end="") }}</span>
       </a>
-      <a class="ibtn{% if "/stats" in cp %} on{% endif %}" href="{{ get_url(path='stats') }}" aria-label="stats" title="stats">
+      <a class="ibtn{% if "/stats" in cp %} on{% endif %}"{% if "/stats" in cp %} aria-current="page"{% endif %} href="{{ get_url(path='stats') }}" aria-label="stats" title="stats">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V5M19 20v-5M3 20h18"/></svg>
       </a>
-      <a class="ibtn{% if "/tags" in cp %} on{% endif %}" href="{{ get_url(path='tags') }}" aria-label="tags" title="tags">
+      <a class="ibtn{% if "/tags" in cp %} on{% endif %}"{% if "/tags" in cp %} aria-current="page"{% endif %} href="{{ get_url(path='tags') }}" aria-label="tags" title="tags">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v7.5l9.5 9.5 8-8L11 3.5H3.5z"/><circle cx="7.5" cy="8" r="1.3"/></svg>
       </a>
     </div>
@@ -61,10 +62,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2.5"/><path d="M8.5 21h7M12 17v4"/></svg>
         <span class="ibtn-label">crt</span>
       </button>
-      <a class="ibtn{% if "/tools" in cp %} on{% endif %}" href="{{ get_url(path='tools') }}" aria-label="tools" title="tools">
+      <a class="ibtn{% if "/tools" in cp %} on{% endif %}"{% if "/tools" in cp %} aria-current="page"{% endif %} href="{{ get_url(path='tools') }}" aria-label="tools" title="tools">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M7.5 10l2.5 2.5L7.5 15M12.5 15h4"/></svg>
       </a>
-      <a class="ibtn{% if "/posts" in cp %} on{% endif %}" href="{{ get_url(path='posts') }}" aria-label="all posts" title="log">
+      <a class="ibtn{% if "/posts" in cp %} on{% endif %}"{% if "/posts" in cp %} aria-current="page"{% endif %} href="{{ get_url(path='posts') }}" aria-label="all posts" title="log">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4.5 6.5h.5M4.5 12h.5M4.5 17.5h.5" stroke-width="2.4"/></svg>
       </a>
       <div class="search" data-index="{{ get_url(path='search_index.en.json') }}">
@@ -74,13 +75,13 @@
         <input id="search-input" class="search-input" type="search" placeholder="grep the log…" autocomplete="off" spellcheck="false" aria-label="search articles" tabindex="-1">
         <div class="search-results" role="listbox" hidden></div>
       </div>
-      <a class="ibtn{% if "/about" in cp %} on{% endif %}" href="{{ get_url(path='about') }}" aria-label="about &amp; contact" title="about">
+      <a class="ibtn{% if "/about" in cp %} on{% endif %}"{% if "/about" in cp %} aria-current="page"{% endif %} href="{{ get_url(path='about') }}" aria-label="about &amp; contact" title="about">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20.5c1.3-3.9 4.2-5.8 7.5-5.8s6.2 1.9 7.5 5.8"/></svg>
       </a>
     </div>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" id="main" tabindex="-1">
     {% block content %}{% endblock content %}
   </main>
 
@@ -90,6 +91,7 @@
     <span class="foot-status">signal stable · built {{ now() | date(format="%Y.%m.%d") }}</span>
     <span class="foot-links">
       <span class="foot-kbd"><kbd>?</kbd> shortcuts</span>
+      <a href="{{ get_url(path='work') }}">work</a>
       <a href="https://github.com/song0x00">github</a>
       <a href="{{ get_url(path='atom.xml') }}">feed</a>
     </span>

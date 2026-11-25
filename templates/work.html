@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}work · {{ config.title }}{% endblock title %}
+{% block desc %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock desc %}
+
+{% block content %}
+{% set posts = get_section(path="posts/_index.md") %}
+<article class="post work">
+  <p class="prompt"><span class="accent">{{ config.extra.prompt_visitor }}@{{ config.extra.prompt_host }}</span> ~ % cat ~/{{ config.extra.prompt_owner }}/work.md</p>
+  <h1 class="display">{{ page.title }}</h1>
+
+  {% if page.extra.status %}
+  <section class="widgets work-status" aria-label="Current focus">
+    {% for s in page.extra.status %}
+    <div class="widget{% if loop.last %} dark{% endif %}">
+      <span class="w-label">{{ s[0] }}</span>
+      <span class="w-value xs">{{ s[1] }}</span>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <div class="prose">{{ page.content | safe }}</div>
+
+  {# selected writing: posts marked `featured = true`, else the latest few #}
+  {% set n_fallback = page.extra.featured_fallback | default(value=3) %}
+  {% set_global n_featured = 0 %}
+  {% for p in posts.pages %}{% if p.extra.featured %}{% set_global n_featured = n_featured + 1 %}{% endif %}{% endfor %}
+  <section class="work-block">
+    <h2 class="label"><span class="idx">→</span> selected writing</h2>
+    <div class="grid">
+      {% if n_featured > 0 %}
+        {% for page in posts.pages %}{% if page.extra.featured %}{% include "partials/card.html" %}{% endif %}{% endfor %}
+      {% else %}
+        {% for page in posts.pages %}{% if loop.index <= n_fallback %}{% include "partials/card.html" %}{% endif %}{% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  {% if page.extra.toolkit %}
+  <section class="work-block">
+    <h2 class="label"><span class="idx">→</span> toolkit</h2>
+    <dl class="toolkit">
+      {% for g in page.extra.toolkit %}
+      <div class="tk-row">
+        <dt>{{ g[0] }}</dt>
+        <dd>{% for i in g[1] %}<span class="tag">{{ i }}</span>{% endfor %}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </section>
+  {% endif %}
+
+  <section class="work-block work-links">
+    <a class="btn" href="{{ get_url(path='tools') }}">tools &amp; cheat sheets <span aria-hidden="true">→</span></a>
+    <a class="btn ghost" href="https://github.com/song0x00">github <span aria-hidden="true">↗</span></a>
+    <a class="btn ghost" href="{{ get_url(path='about') }}#contact">full CV on request <span aria-hidden="true">→</span></a>
+  </section>
+</article>
+{% endblock content %}
